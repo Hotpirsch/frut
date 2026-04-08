@@ -2,92 +2,10 @@
 Provide street navigation with driving fun in mind
 
 ## Overview
+frut is a web application that builds on existing street navigation APIs. Its purpose is to add an additional aspect to route planning: driving fun. In order to measure the fun of a route we assume that driving is more fun the more corners there are on the route. Frut shall optimize for the shortest route with the most corners between two locations on a map.
 
-**frut** is a web application that finds the most enjoyable driving route between two locations by combining shortest-path routing with a curviness index called **frutidx**.
-
-A higher frutidx means more (and sharper) corners — more driving fun.
-
-## Architecture (AWS)
-
-```
-Browser ──HTTPS──► CloudFront ──► S3            (frontend: HTML/JS)
-                              ──► API Gateway ──► Lambda (FastAPI backend)
-```
-
-- **Frontend** – static HTML/CSS/JS with [Leaflet.js](https://leafletjs.com/) map
-- **Backend** – Python [FastAPI](https://fastapi.tiangolo.com/) deployed as AWS Lambda (via [Mangum](https://mangum.io/))
-- **Routing** – [OSRM](http://project-osrm.org/) HTTP API (public demo server or self-hosted)
-- **Infrastructure** – [AWS CDK](https://aws.amazon.com/cdk/) (Python)
-
-## frutidx Algorithm
-
-1. For each *section* (straight line between two consecutive route coordinates) compute its **bearing** (compass direction, 0–360°).
-2. For each pair of adjacent sections compute the **absolute bearing difference** (0–180°).
-3. The **frutidx of a section** = average of the bearing differences to its leading and following section.
-   - First section: equals the difference to the following section only.
-   - Last section: equals the difference to the leading section only.
-4. The **total frutidx** of a route = sum of all per-section values.
-5. The **frut score** = `weight × (total_frutidx / distance_km)` — higher is better.
-
-Routes returned by the API are sorted by frut score (descending).
-
-## Project Structure
-
-```
-frut/
-├── backend/
-│   ├── frut_calculator.py   # Core frutidx algorithm
-│   ├── routing.py           # OSRM integration & route scoring
-│   ├── app.py               # FastAPI application + Lambda handler
-│   └── requirements.txt
-├── frontend/
-│   ├── index.html
-│   ├── app.js
-│   └── style.css
-├── infrastructure/
-│   ├── frut_stack.py        # AWS CDK stack
-│   ├── app.py               # CDK entry point
-│   └── requirements.txt
-└── tests/
-    └── test_frut_calculator.py
-```
-
-## Local Development
-
-### Backend
-
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn app:app --reload
-# API available at http://localhost:8000
-```
-
-### Frontend
-
-Open `frontend/index.html` in a browser.  
-Set `window.FRUT_API_BASE = 'http://localhost:8000'` before loading `app.js`, or serve both from the same origin.
-
-### Tests
-
-```bash
-pip install pytest
-pytest tests/ -v
-```
-
-## Deployment (AWS CDK)
-
-```bash
-cd infrastructure
-pip install -r requirements.txt
-cdk bootstrap   # first time only
-cdk deploy
-```
-
-The stack outputs the CloudFront URL (frontend + API) after a successful deployment.
-
-### Configuration
-
-| Environment variable | Default | Description |
-|---|---|---|
-| `OSRM_BASE_URL` | `https://router.project-osrm.org` | OSRM instance base URL |
+## High level requirements
+* We have to add an additional weight to each route segment that measures the curviness of the route. This is done in two steps. First we calculate each bearing difference between adjacent route sections. Then we calculate the fun index for a route segment (fidx) by calculating the average of the absolute bearing differences of the leading and the following route segment.
+* The user shall be able to pick a starting point and an endpoint either from a map or by entering the addresses into input fields.
+* The user shall be able to select the type of streets that the route shall be optimized for (highway, country road, bike path).
+* The web app shall display the route on a map.
