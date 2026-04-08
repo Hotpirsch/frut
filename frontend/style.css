@@ -1,0 +1,183 @@
+/* ───────────────────────────────────────────────────────────
+   frut – style.css
+   ─────────────────────────────────────────────────────────── */
+
+:root {
+  --accent:    #e84118;
+  --bg:        #f5f5f5;
+  --panel-bg:  #ffffff;
+  --text:      #2d2d2d;
+  --muted:     #888;
+  --radius:    8px;
+  --shadow:    0 2px 8px rgba(0,0,0,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+header {
+  background: var(--accent);
+  color: #fff;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+header h1 { font-size: 1.6rem; }
+.subtitle  { font-size: 0.95rem; opacity: 0.85; }
+
+main {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ── Panels ─────────────────────────────────────────────── */
+.panel {
+  background: var(--panel-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.2rem 1.4rem;
+}
+
+#input-panel {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+#results-panel {
+  grid-column: 1;
+  grid-row: 2;
+  overflow-y: auto;
+  max-height: calc(100vh - 280px);
+}
+
+#map {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  height: calc(100vh - 130px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  min-height: 400px;
+}
+
+/* ── Form elements ──────────────────────────────────────── */
+.field { display: flex; flex-direction: column; gap: 0.3rem; }
+.field label { font-size: 0.82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.field input[type="text"] {
+  border: 1px solid #ddd;
+  border-radius: var(--radius);
+  padding: 0.55rem 0.8rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field input[type="text"]:focus { border-color: var(--accent); }
+
+.slider-field input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+.hint { font-size: 0.78rem; color: var(--muted); }
+
+button#search-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+button#search-btn:hover  { opacity: 0.88; }
+button#search-btn:active { opacity: 0.75; }
+button#search-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.error { color: var(--accent); font-size: 0.85rem; }
+.hidden { display: none !important; }
+
+/* ── Route list ─────────────────────────────────────────── */
+#results-panel h2 { font-size: 1rem; margin-bottom: 0.7rem; }
+#route-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+
+.route-item {
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.7rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--bg);
+}
+.route-item:hover  { background: #ffeee9; border-color: var(--accent); }
+.route-item.active { background: #ffeee9; border-color: var(--accent); }
+
+.route-item .route-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+.badge {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 4px;
+  padding: 0 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+.route-stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.route-stats strong { color: var(--text); }
+
+/* ── Loading spinner ────────────────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 3px solid rgba(0,0,0,0.15);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 0.4rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 800px) {
+  main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  #map {
+    grid-column: 1;
+    grid-row: 2;
+    height: 55vw;
+    min-height: 250px;
+  }
+  #results-panel {
+    grid-column: 1;
+    grid-row: 3;
+    max-height: none;
+  }
+}
