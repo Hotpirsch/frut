@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>frut – Fun Route Optimizer</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🏎 frut</h1>
+    <p class="subtitle">Find the most fun driving route</p>
+  </header>
+
+  <main>
+    <!-- ── Input panel ──────────────────────────────────────────────── -->
+    <section class="panel" id="input-panel">
+      <div class="field">
+        <label for="start-input">Start</label>
+        <input
+          id="start-input"
+          type="text"
+          placeholder="e.g. Munich, Germany"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="field">
+        <label for="end-input">End</label>
+        <input
+          id="end-input"
+          type="text"
+          placeholder="e.g. Innsbruck, Austria"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="field slider-field">
+        <label for="weight-slider">
+          Curviness weight:
+          <strong id="weight-value">1.0</strong>
+        </label>
+        <input
+          id="weight-slider"
+          type="range"
+          min="0"
+          max="5"
+          step="0.1"
+          value="1.0"
+        />
+        <span class="hint">
+          0 = shortest route &nbsp;·&nbsp; 5 = most curves
+        </span>
+      </div>
+
+      <button id="search-btn">Find fun route</button>
+      <p id="error-msg" class="error hidden"></p>
+    </section>
+
+    <!-- ── Map ──────────────────────────────────────────────────────── -->
+    <div id="map"></div>
+
+    <!-- ── Results ──────────────────────────────────────────────────── -->
+    <section class="panel" id="results-panel">
+      <h2>Routes</h2>
+      <p id="no-results" class="hint">No routes yet – enter start and end above.</p>
+      <ul id="route-list"></ul>
+    </section>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WPeWs="
+    crossorigin=""
+  ></script>
+
+  <script src="app.js"></script>
+</body>
+</html>
